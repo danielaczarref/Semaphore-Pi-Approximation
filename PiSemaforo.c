@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <math.h>
+#include <time.h>
 
 #define QT_THREAD 4
 #define TERMOS 100
@@ -37,10 +38,12 @@ void *thread_funcao(void *arg)
 
 int main(int argc, char **argv)
 {
+  clock_t tInicio, tFim, t;
   sem_init(&semaforo, 0, 1);
   resultado = 0;
   int length = TERMOS / QT_THREAD;
   int remainder = TERMOS % QT_THREAD;
+  tInicio = clock();
 
   for (int i = 0; i < QT_THREAD; i++)
   {
@@ -58,6 +61,9 @@ int main(int argc, char **argv)
     pthread_join(threads[i], NULL);
   }
   sem_destroy(&semaforo);
+  tFim = clock();
+  t = tFim - tInicio;
   printf("A aproximacao para pi/4 eh igual a: %lf\n", resultado);
   printf("\nOu seja, a aproximacao para pi eh igual a: %lf \n", resultado * 4);
+  printf("Ticks gastos: %d. Tempo gasto: %Lf s\n", (int)t, (long double)(t / CLOCKS_PER_SEC));
 }
